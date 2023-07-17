@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  nodejs:
+    container_name: nodejs-facebook-app
+    command: npm run start:dev
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 3620:3620
+    volumes:
+      - .:/home/node/nodejs-facebook
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo:latest
+    container_name: nodejs-facebook-mongo
+    ports:
+      - 27029:27017
+    expose:
+      - 27029
+    volumes:
+      - ./data:/data/db
+    networks:
+      - network
+
+networks:
+  network:
+    driver: bridge
