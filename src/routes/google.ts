@@ -12,10 +12,23 @@ const app = express.Router();
 app.get("/test", async (req, res) => {
     try {
         const { refreshToken } = req.query as any;
-        const customer = await (new GoogleService()).getListCustomers(refreshToken);
-        // const data = await customer.getCampaigns();
-        console.log('test - customer: ', customer);
-        res.header("Content-Type",'application/json').status(200).send(customer);
+        const getListCustomers = await (new GoogleService()).getListCustomers(refreshToken);
+
+        console.log("🚀 -----------------------------------------------------------------------🚀");
+        console.log("🚀 ~ file: google.ts:16 ~ app.get ~ getListCustomers:", getListCustomers);
+        console.log("🚀 -----------------------------------------------------------------------🚀");
+
+        const data = await (new GoogleService()).getCustomer(refreshToken);
+        const customers = await data.getCustomers();
+
+        // const campaigns = await data.getCampaigns();
+
+        // const url = new GoogleService().getAuthUrl();
+        console.log("🚀 ---------------------------------------------🚀");
+        console.log("🚀 ~ file: google.ts:19 ~ app.get ~ customers:", customers);
+        console.log("🚀 ---------------------------------------------🚀");
+        
+        res.send(null);
     } catch(err: any) {
         res.status(500).send({message: err.message});
     }
@@ -23,7 +36,8 @@ app.get("/test", async (req, res) => {
 
 app.get("/login", async (req, res) => {
     try {
-        const loginUrl = new GoogleService().getLoginUrl();
+        // const loginUrl = new GoogleService().getLoginUrl();
+        const loginUrl = new GoogleService().getAuthUrl();
         res.header("Content-Type",'text/html');
         res.write(`<a href=${loginUrl}>
                         Login with Google

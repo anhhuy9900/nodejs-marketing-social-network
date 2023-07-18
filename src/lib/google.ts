@@ -1,4 +1,5 @@
 import axios from "axios";
+import { google } from 'googleapis';
 import { GoogleAdsApi, enums } from "google-ads-api";
 import {
   GG_CLIENT_ID,
@@ -12,8 +13,14 @@ import {
 const client = new GoogleAdsApi({
     client_id: GG_CLIENT_ID,
     client_secret: GG_CLIENT_SECRET,
-    developer_token: "1XuGow69yoJ2tZNbTjxJ-w",
+    developer_token: "D5_xDMB9ctVSU8Pv8JDdEg",
 });
+
+const oauth2Client = new google.auth.OAuth2(
+  GG_CLIENT_ID,
+  GG_CLIENT_SECRET,
+  GG_CALLBACK_URL
+);
 
 export class GoogleService {
     customer: any;
@@ -104,6 +111,20 @@ export class GoogleService {
     }
   }
 
+  getAuthUrl() {
+    const url = oauth2Client.generateAuthUrl({    
+        // If you only need one scope you can pass it as a string
+        scope: [
+            'https://www.googleapis.com/auth/adwords'
+        ].join(" "),
+        response_type: "code",
+        access_type: "offline",
+        prompt: "consent",
+    });
+
+    return url;
+  }
+
   async getListCustomers(refreshToken: string) {
     const customers = await client.listAccessibleCustomers(refreshToken);
     return customers;
@@ -113,6 +134,7 @@ export class GoogleService {
     const customer = client.Customer({
         customer_id: "9273297294",
         refresh_token: refreshToken,
+        login_customer_id: "6357156025"
       });
     console.log("🚀 ---------------------------------------------------------------------------🚀");
     console.log("🚀 ~ file: google.ts:92 ~ GoogleService ~ getCustomer ~ customer:", customer);
@@ -121,36 +143,52 @@ export class GoogleService {
     return this;
   }
 
-  async getCampaigns() {
-    // const campaigns = await this.customer.report({
-    //     entity: "campaign",
-    //     attributes: [
-    //         "campaign.id",
-    //         "campaign.name",
-    //     ],
-    //     metrics: [
-    //         "metrics.clicks",
-    //         "metrics.impressions",
-    //         "metrics.all_conversions",
-    //     ],
-    //     // constraints: {
-    //     //     "campaign.status": enums.CampaignStatus.ENABLED,
-    //     // },
-    //     limit: 20,
-    // });
-    console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCampaigns ~ test:", this.customer);
-    const campaigns = await this.customer.query(`
+  async getCustomers() {
+    try {
+      console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCustomers ~ test:", this.customer);
+      const customers = await this.customer.query(`
         SELECT 
-            campaign.id, 
-            campaign.name,
+          customer.id
         FROM 
-            campaign
+          customer
         LIMIT 20
-        `);
-    console.log("🚀 -------------------------------------------------------------------------------🚀");
-    console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCampaigns ~ campaigns:", campaigns);
-    console.log("🚀 -------------------------------------------------------------------------------🚀");
+      `);
+      console.log("🚀 -------------------------------------------------------------------------------🚀");
+      console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCustomers ~ campaigns:", customers);
+      console.log("🚀 -------------------------------------------------------------------------------🚀");
 
-    return campaigns;
+      return customers;
+    } catch(err) {
+      console.log("🚀 -------------------------------------------------------------------------------🚀");
+      console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCustomers ~ ERR:", err);
+    }
+  }
+
+  async getCampaigns() {
+    try {
+      console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCampaigns ~ test:", this.customer);
+      const campaigns = await this.customer.query(`
+        SELECT 
+          campaign.id, 
+          campaign.name,
+          campaign.bidding_strategy_type,
+          campaign_budget.amount_micros,
+          metrics.cost_micros,
+          metrics.clicks,
+          metrics.impressions,
+          metrics.all_conversions
+        FROM 
+          campaign
+        LIMIT 20
+      `);
+      console.log("🚀 -------------------------------------------------------------------------------🚀");
+      console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCampaigns ~ campaigns:", campaigns);
+      console.log("🚀 -------------------------------------------------------------------------------🚀");
+
+      return campaigns;
+    } catch(err) {
+      console.log("🚀 -------------------------------------------------------------------------------🚀");
+      console.log("🚀 ~ file: google.ts:116 ~ GoogleService ~ getCampaigns ~ ERR:", err);
+    }
   }
 }
