@@ -1,4 +1,4 @@
-# nodejs-facebook
+# nodejs-social-network
 
 ### START PROJECT
 
