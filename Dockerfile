@@ -6,15 +6,15 @@ RUN apk add --no-cache python3 make g++
 
 ENV NODE_ENV=$ENVIRONMENT
 
-WORKDIR /home/node/nodejs-facebook/src
+WORKDIR /home/node/nodejs-social-network/src
 
-COPY ["package*.json", "/home/node/nodejs-facebook/"]
+COPY ["package*.json", "/home/node/nodejs-social-network/"]
 
 RUN npm i
 
 RUN npm i -g pm2
 
-COPY [".", "/home/node/nodejs-facebook/"]
+COPY [".", "/home/node/nodejs-social-network/"]
 
 # CMD ["pm2-runtime", "ecosystem.local.config.js"]
 

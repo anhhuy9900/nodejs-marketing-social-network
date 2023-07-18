@@ -8,13 +8,12 @@ export interface IUserDocument extends Pick<Document, '_id'> {
   status: string;
   provider: string;
   networkId?: string | number;
-  accessToken?: string;
 }
 
 
 export const UserSchema = new mongoose.Schema(
   {
-    userFbId: {
+    networkId: {
       type: String,
       required: true,
     },

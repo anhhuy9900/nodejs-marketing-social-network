@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   nodejs:
-    container_name: nodejs-facebook-app
+    container_name: nodejs-social-network-app
     command: npm run start:dev
     build:
       context: .
@@ -10,13 +10,13 @@ services:
     ports:
       - 3620:3620
     volumes:
-      - .:/home/node/nodejs-facebook
+      - .:/home/node/nodejs-social-network
     depends_on:
       - mongodb
 
   mongodb:
     image: mongo:latest
-    container_name: nodejs-facebook-mongo
+    container_name: nodejs-social-network-mongo
     ports:
       - 27029:27017
     expose:

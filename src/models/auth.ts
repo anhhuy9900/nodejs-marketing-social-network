@@ -1,43 +1,56 @@
 import mongoose, { Document, Model, Mongoose } from "mongoose";
 
 export interface IAuthDocument extends Pick<Document, '_id'> {
+  provider: string;
   accessToken: string;
-  userId: string;
+  userId?: string;
   expiresIn: string;
-  signedRequest: string;
-  graphDomain: string;
-  dataAccessExpirationTime: string;
+  signedRequest?: string;
+  graphDomain?: string;
+  dataAccessExpirationTime?: string;
+  refreshToken?: string;
 }
 
 
 export const AuthSchema = new mongoose.Schema(
   {
-    userId: {
+    provider:  {
       type: String,
       required: true,
     },
+    userId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     accessToken: {
       type: String,
-      trim: true,
+      required: true,
+      default: null,
+    },
+    refreshToken: {
+      type: String,
+      required: false,
       default: null,
     },
     expiresIn: {
       type: String,
       required: true,
-      default: null
     },
     signedRequest: {
       type: String,
-      required: true,
-      unique: true,
+      required: false,
+      default: null
     },
     graphDomain: {
       type: String,
-      required: true,
+      required: false,
+      default: null
     },
     dataAccessExpirationTime: {
       type: Number,
-      required: true,
+      required: false,
+      default: null
     },
   },
   {

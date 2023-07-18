@@ -6,7 +6,6 @@ import Routes from './routes'
 
 
 (async() => {
-    const routes = express();
 
     try {
         await mongoose.connect(MONGO_URI, {
@@ -21,8 +20,6 @@ import Routes from './routes'
     const app = express();
     app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
     app.use(bodyParser.json());
-
-    routes.use('/', Routes);
     
     app.use(Routes);
 

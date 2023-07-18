@@ -1,8 +1,6 @@
 import { FB_CLIENT_ID, FB_CLIENT_SECRET, FB_CALLBACK_URL } from '../constants';
 
-
-
-export class FacebookLib {
+export class FacebookService {
     
     getLoginUrl() {
         const stringifiedParams = new URLSearchParams({
