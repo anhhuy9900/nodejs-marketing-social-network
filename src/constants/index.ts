@@ -17,6 +17,9 @@ export const GG_AUTHORIZATION_URL = config?.GG_AUTHORIZATION_URL || '';
 export const GG_TOKEN_URL = config?.GG_TOKEN_URL || '';
 export const GG_USER_INFO_URL = config?.GG_USER_INFO_URL || '';
 export const GG_AUTH_URL = config?.GG_AUTH_URL || '';
+export const GG_API_URL = config?.GG_API_URL || '';
+export const GG_API_VERSION = config?.GG_API_VERSION || '';
+export const GG_DEVELOPER_TOKEN = config?.GG_DEVELOPER_TOKEN || '';
 
 export enum PROVIDERS {
     GOOGLE = 'google',
