@@ -11,12 +11,11 @@ import { GoogleAPIService } from "./service.api";
 import { AdTypes, AdFetchTypeArgs } from "./interfaces";
 import { GRANT_TYPE, GG_SCOPES } from "../google/constants";
 
-export class GoogleService {
-  protected readonly googleAPIService: GoogleAPIService;
+export class GoogleService extends GoogleAPIService {
   private readonly scopes: string[];
 
   constructor() {
-    this.googleAPIService = new GoogleAPIService();
+    super();
     this.scopes = GG_SCOPES;
   }
 
@@ -33,7 +32,7 @@ export class GoogleService {
 
       return `${GG_AUTH_URL}?${stringifiedParams}`;
     } catch (err) {
-      throw new Error(`ERROR AUTH: ${err}`);
+      throw new Error(`Error auth: ${err}`);
     }
   }
 
@@ -54,10 +53,10 @@ export class GoogleService {
           code,
         },
       });
-      console.log("getAccessToken: ", data);
+
       return data;
     } catch (err) {
-      throw new Error(`ERROR GET ACCESS TOKEN: ${err}`);
+      throw new Error(`Get access token by code err: ${err}`);
     }
   }
 
@@ -81,7 +80,7 @@ export class GoogleService {
       console.log("getAccessTokenByRefreshToken: ", data);
       return data;
     } catch (err) {
-      throw new Error(`ERROR GET ACCESS TOKEN: ${err}`);
+      throw new Error(`Get access token err: ${err}`);
     }
   }
 
@@ -97,12 +96,12 @@ export class GoogleService {
       console.log(data); // { id, email, given_name, family_name }
       return data;
     } catch (err) {
-      throw new Error(`ERROR GET USER INFO: ${err}`);
+      throw new Error(`Get user info error: ${err}`);
     }
   }
 
   getAuthUrl() {
-    const url = this.googleAPIService.oauth2Client.generateAuthUrl({
+    const url = this.oauth2Client.generateAuthUrl({
       scope: this.scopes.join(" "),
       response_type: "code",
       access_type: "offline",
@@ -112,39 +111,14 @@ export class GoogleService {
     return url;
   }
 
-  async getToken(code: string) {
-    const { tokens } = await this.googleAPIService.oauth2Client.getToken(code);
-
-    if (!tokens) {
-      throw new Error(`The token isn't exist`);
-    }
-
-    return tokens;
-  }
-
-  async getAccessToken(refreshToken: string) {
-    if (!refreshToken) {
-      throw new Error(`The refreshToken isn't exists`);
-    }
-
-    try {
-      const accessToken = this.googleAPIService.getAccessToken(refreshToken);
-      return accessToken;
-    } catch (err) {
-      throw new Error(`Get access token err: ${err}`);
-    }
-  }
-
   async getAllCustomerManagers(refreshToken: string) {
     try {
-      const url = `${this.googleAPIService.GG_API_URL}${this.googleAPIService.GG_API_VERSION}/customers:listAccessibleCustomers`;
-      const accessToken = await this.googleAPIService.getAccessToken(
-        refreshToken
-      );
-      const headers = this.googleAPIService.createHeaderOptions(accessToken);
-      this.googleAPIService.setRequestConfig(headers);
+      const url = `${this.GG_API_URL}${this.GG_API_VERSION}/customers:listAccessibleCustomers`;
+      const accessToken = await this.getAccessToken(refreshToken);
+      const headers = this.createHeaderOptions(accessToken);
+      this.setRequestConfig(headers);
 
-      const { data } = await this.googleAPIService.axiosInstance.get(url, {});
+      const { data } = await this.axiosInstance.get(url, {});
       return data;
     } catch (error) {
       console.error("Google API get customers has err:", JSON.stringify(error));
@@ -153,33 +127,23 @@ export class GoogleService {
   }
 
   async getAllAccounts({ customerId, refreshToken }: AdFetchTypeArgs) {
-    try {
-      const data = await this.googleAPIService
-        .createQuery(AdTypes.CUSTOMER_CLIENT)
-        .fetchData(refreshToken, customerId);
-      return data;
-    } catch (error) {
-      console.error("Google API get accounts has err:", JSON.stringify(error));
-      throw error;
-    }
+    const data = await this
+      .createQuery(AdTypes.CUSTOMER_CLIENT)
+      .fetchData(refreshToken, customerId);
+    return data;
   }
 
   async fetchingAdsData({ customerId, loginCustomerId, adType, refreshToken }: AdFetchTypeArgs) {
-    const data = await this.googleAPIService
+    const data = await this
       .createQuery(adType)
       .fetchData(refreshToken, customerId, loginCustomerId);
     return data;
   }
 
   async getCustomerDetail({ customerId, resourceName, refreshToken }: AdFetchTypeArgs) {
-    try {
-      const data = await this.googleAPIService
-        .createQuery(AdTypes.CUSTOMER_DETAIL, { resourceName })
-        .fetchData(refreshToken, customerId);
-      return data;
-    } catch (error) {
-      console.error("Google API get accounts has err:", JSON.stringify(error));
-      throw error;
-    }
+    const data = await this
+      .createQuery(AdTypes.CUSTOMER_DETAIL, { resourceName })
+      .fetchData(refreshToken, customerId);
+    return data;
   }
 }

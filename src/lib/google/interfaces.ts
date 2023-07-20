@@ -1,5 +1,14 @@
-export interface QueryOptionArgs {
-    resourceName?: string
+
+export interface CreateQuery {
+    selects?: string[], 
+    from: string,
+    where?: string[], 
+    orderBy?: string[], 
+    limit?: number, 
+}
+
+export interface CreateQueryOptionArgs extends Omit<CreateQuery, 'from'> {
+    resourceName?: string,
 }
 
 export enum AdTypes {
@@ -15,5 +24,16 @@ export interface AdFetchTypeArgs {
     customerId?: string, 
     loginCustomerId?: string, 
     adType?: AdTypes, 
-    resourceName?: string;
+    resourceName?: string,
+}
+
+export interface HttpHeaderOptions {
+    "Content-Type": string,
+    Authorization: string,
+    "developer-token": string,
+    "login-customer-id"?: string,
+}
+
+export interface HttpRequestOptions {
+    url: string,
 }

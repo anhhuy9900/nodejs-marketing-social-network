@@ -141,7 +141,7 @@ app.get("/ads", async (req, res) => {
 app.get("/customer-detail", async (req, res) => {
     try {
         const { refreshToken, resourceName, customerId } = req.query as any;
-        const ads = await (new GoogleService()).getCustomerDetail({ refreshToken, customerId, resourceName });
+        const ads = await googleService.getCustomerDetail({ refreshToken, customerId, resourceName });
         res.header("Content-Type",'application/json').send(ads);
     } catch(err: any) {
         res.status(500).send({message: err.message});

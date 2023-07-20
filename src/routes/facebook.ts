@@ -1,65 +1,13 @@
 import express from 'express';
-import axios from 'axios';
 import path from 'path';
 import { FacebookService } from '../lib/facebook';
-import { IAuthDocument, AuthModel } from '../models/auth';
-import { UserModel } from '../models/user';
 
 const app = express.Router();
+const facebookService = new FacebookService();
 
 app.get("/", async (req, res) => {
     try {
-        const data = {};
-        res.header("Content-Type",'application/json').status(200).send(data);	
-    } catch(err: any) {
-        res.status(500).send({message: err.message});
-    }
-});
-
-app.post("/authenticate", async (req, res) => {
-    try {
-        console.log('authenticate: ', req);
-        const { accessToken, userID, expiresIn, signedRequest, graphDomain, data_access_expiration_time } = req.body.authResponse;
-        const body: IAuthDocument = {
-            provider: 'facebook',
-            accessToken,
-            refreshToken: '',
-            userId: userID,
-            expiresIn,
-            signedRequest,
-            graphDomain,
-            dataAccessExpirationTime: data_access_expiration_time
-        };
-        const auth = new AuthModel(body);
-        await auth.save();
-
-        res.header("Content-Type",'application/json').status(200).send("Verify authenticate successfully");	
-    } catch(err: any) {
-        res.status(500).send({message: err.message});
-    }
-});
-
-app.get("/profile", async (req, res) => {
-    try {
-        const { accessToken } = req.query;
-        
-        const { data } = await axios({
-            url: 'https://graph.facebook.com/me',
-            method: 'get',
-            params: {
-              fields: ['id', 'email', 'first_name', 'last_name'].join(','),
-              access_token: accessToken,
-            },
-        });
-        console.log(data);
-        await new UserModel({
-            networkId: data.id,
-            email: data.email,
-            name: `${data.first_name}${data.last_name}`,
-            status: 'active'
-        }).save();
-
-        res.status(200).send("Get profile info successfully");	
+        res.header("Content-Type",'application/json').status(200).send('Welcome to Meta facebook');	
     } catch(err: any) {
         res.status(500).send({message: err.message});
     }
@@ -68,11 +16,102 @@ app.get("/profile", async (req, res) => {
 app.get("/login", async (req, res) => {
     try {
         res.header("Content-Type",'text/html');
-        // res.write(`<a href=${facebookLoginUrl}>
-        //                 Login with Facebook
-        //             </a>`);	
-
         res.sendFile(path.resolve(__dirname, '../views/index.html'))
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.post("/authenticate", async (req, res) => {
+    try {
+        console.log('authenticate: ', req);
+        const data = await facebookService.createAuth(req.body.authResponse);
+
+        res.header("Content-Type",'application/json').status(200).send({
+            msg: "Verify authenticate successfully",
+            data
+        });	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/profile", async (req, res) => {
+    try {
+        const { accessToken } = req.query as any;
+        const data = await facebookService.createUserFromFbProfile(accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send({
+            msg: "Get profile info successfully",
+            data
+        });	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/permission", async (req, res) => {
+    try {
+        const { accessToken } = req.query as any;
+        const data = await facebookService.getUserPermission(accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send(data);	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+
+app.get("/adAccounts", async (req, res) => {
+    try {
+        const { accessToken, userId } = req.query as any;
+        const data = await facebookService.getAdAccounts(userId, accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send(data);	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/campaigns", async (req, res) => {
+    try {
+        const { accessToken, accountId } = req.query as any;
+        const data = await facebookService.getAdAccounts(accountId, accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send(data);	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/adsets", async (req, res) => {
+    try {
+        const { accessToken, accountId } = req.query as any;
+        const data = await facebookService.getAdsets(accountId, accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send(data);	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/ads", async (req, res) => {
+    try {
+        const { accessToken, accountId } = req.query as any;
+        const data = await facebookService.getAds(accountId, accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send(data);	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/adImages", async (req, res) => {
+    try {
+        const { accessToken, accountId } = req.query as any;
+        const data = await facebookService.getAdImages(accountId, accessToken);
+
+        res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {
         res.status(500).send({message: err.message});
     }
