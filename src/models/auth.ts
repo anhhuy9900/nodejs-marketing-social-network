@@ -11,6 +11,8 @@ export interface IAuthDocument extends Pick<Document, '_id'> {
   refreshToken?: string;
 }
 
+export interface IAuthModel extends Model<IAuthDocument> {}
+
 
 export const AuthSchema = new mongoose.Schema(
   {
@@ -58,4 +60,4 @@ export const AuthSchema = new mongoose.Schema(
   }
 );
 
-export const AuthModel = mongoose.model<IAuthDocument>("Auth", AuthSchema);
+export const AuthModel = mongoose.model<IAuthModel>("Auth", AuthSchema);

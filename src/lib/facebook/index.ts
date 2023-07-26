@@ -1,5 +1,5 @@
 import { FB_CLIENT_ID, FB_CLIENT_SECRET, FB_CALLBACK_URL, PROVIDERS } from '../../constants';
-import { IAuthDocument, AuthModel } from '../../models/auth';
+import { IAuthDocument, IAuthModel, AuthModel } from '../../models/auth';
 import { IUserDocument, UserModel } from '../../models/user';
 import { FacebookAPIService } from './service.api';
 import { FBAuthResponse } from './interfaces';
@@ -24,7 +24,7 @@ export class FacebookService extends FacebookAPIService {
         return facebookLoginUrl;
     }
 
-    async createAuth(body: FBAuthResponse): Promise<IAuthDocument> {
+    async createAuth(body: FBAuthResponse): Promise<IAuthModel> {
         const { accessToken, userID, expiresIn, signedRequest, graphDomain, data_access_expiration_time } = body;
         const authData: IAuthDocument = {
             provider: PROVIDERS.FACEBOOK,

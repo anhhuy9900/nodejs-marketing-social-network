@@ -12,5 +12,7 @@ export const GRANT_TYPE = {
 }
 
 export const GG_SCOPES = [
+    'https://www.googleapis.com/auth/userinfo.email',
+    'https://www.googleapis.com/auth/userinfo.profile',
     'https://www.googleapis.com/auth/adwords'
 ]

@@ -187,13 +187,13 @@ export class GoogleAPIService {
     if (limit) {
       query = `${query} LIMIT ${limit}`;
     }
-    console.log(
-      "🚀 ------------------------------------------------------------------------------🚀"
-    );
-    console.log(
-      "🚀 ~ file: service.api.ts:140 ~ GoogleAPiService ~ createQuery ~ query:",
-      query
-    );
+    // console.log(
+    //   "🚀 ------------------------------------------------------------------------------🚀"
+    // );
+    // console.log(
+    //   "🚀 ~ file: service.api.ts:140 ~ GoogleAPiService ~ createQuery ~ query:",
+    //   query
+    // );
 
     return query;
   }
@@ -223,13 +223,13 @@ export class GoogleAPIService {
   ): Promise<T> {
     try {
       const accessToken = await this.getAccessToken(refreshToken);
-      console.log(
-        "🚀 ----------------------------------------------------------------------------🚀"
-      );
-      console.log(
-        "🚀 ~ file: service.api.ts:212 ~ GoogleAPIService ~ accessToken:",
-        accessToken
-      );
+      // console.log(
+      //   "🚀 ----------------------------------------------------------------------------🚀"
+      // );
+      // console.log(
+      //   "🚀 ~ file: service.api.ts:212 ~ GoogleAPIService ~ accessToken:",
+      //   accessToken
+      // );
 
       const endpoint = this.createQueryUrl(customerId);
       const headers = this.createHeaderOptions(accessToken, loginCustomerId);

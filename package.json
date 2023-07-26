@@ -1,7 +1,7 @@
 {
-  "name": "nodejs-facebook",
+  "name": "nodejs-social-network",
   "version": "1.0.0",
-  "description": "Create a package practice with facebook auth, sdk etc...",
+  "description": "Create a package practice with social network as google, facebook auth, sdk etc...",
   "main": "index.js",
   "scripts": {
     "start:dev": "nodemon --legacy-watch src/index.ts",
@@ -11,17 +11,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/anhhuy9900/nodejs-facebook.git"
+    "url": "git+https://github.com/anhhuy9900/nodejs-social-network.git"
   },
   "keywords": [
-    "nodejs-facebook"
+    "nodejs-social-network"
   ],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/anhhuy9900/nodejs-facebook/issues"
+    "url": "https://github.com/anhhuy9900/nodejs-social-network/issues"
   },
-  "homepage": "https://github.com/anhhuy9900/nodejs-facebook#readme",
+  "homepage": "https://github.com/anhhuy9900/nodejs-social-network#readme",
   "dependencies": {
     "@types/axios": "^0.14.0",
     "@types/body-parser": "^1.19.2",
@@ -43,6 +43,8 @@
   },
   "devDependencies": {
     "@types/jest": "^29.5.3",
-    "jest": "^29.6.1"
+    "@types/supertest": "^2.0.12",
+    "jest": "^29.6.1",
+    "supertest": "^6.3.3"
   }
 }

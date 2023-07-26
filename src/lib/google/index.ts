@@ -6,6 +6,7 @@ import {
   GG_USER_INFO_URL,
   GG_CALLBACK_URL,
   GG_AUTH_URL,
+  PROVIDERS,
 } from "../../constants";
 import { GoogleAPIService } from "./service.api";
 import { AdTypes, AdFetchTypeArgs } from "./interfaces";
@@ -13,10 +14,12 @@ import { GRANT_TYPE, GG_SCOPES } from "../google/constants";
 
 export class GoogleService extends GoogleAPIService {
   private readonly scopes: string[];
+  public name: string;
 
   constructor() {
     super();
     this.scopes = GG_SCOPES;
+    this.name = PROVIDERS.GOOGLE
   }
 
   getLoginUrl() {
@@ -93,7 +96,7 @@ export class GoogleService extends GoogleAPIService {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(data); // { id, email, given_name, family_name }
+      // console.log(data); // { id, email, given_name, family_name }
       return data;
     } catch (err) {
       throw new Error(`Get user info error: ${err}`);

@@ -14,13 +14,14 @@ const googleAPIService = new GoogleAPIService();
 app.get("/test", async (req, res) => {
     try {
         const { refreshToken } = req.query as any;
-        const data = await googleAPIService.createQuery(AdTypes.CAMPAIGN).fetchData(refreshToken, '9273297294', '6357156025');
+        // const data = await googleAPIService.createQuery(AdTypes.CAMPAIGN).fetchData(refreshToken, '9273297294', '6357156025');
 
+        const auth = await AuthModel.findOne({ provider: PROVIDERS.GOOGLE });
         console.log("🚀 -----------------------------------------------------------------------🚀");
-        console.log("🚀 ~ file: google.ts:16 ~ app.get ~ data:", data);
+        console.log("🚀 ~ file: google.ts:16 ~ app.get ~ data:", auth);
         console.log("🚀 -----------------------------------------------------------------------🚀");
 
-        res.header("Content-Type",'application/json').send(data);
+        res.header("Content-Type",'application/json').send(auth);
     } catch(err: any) {
         res.status(500).send({message: err.message});
     }
