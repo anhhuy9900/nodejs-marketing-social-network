@@ -1,5 +1,5 @@
-import mongoose, { ConnectOptions } from 'mongoose';
-import { MONGO_URI, GG_API_VERSION, GG_API_URL, GG_CLIENT_SECRET } from './../../src/constants';
+import { connectDB } from './../../src/lib/db';
+import { GG_API_VERSION, GG_API_URL, GG_CLIENT_SECRET } from './../../src/constants';
 import { GoogleAPIService } from '../../src/lib/google/service.api';
 import { GoogleService } from '../../src/lib/google/index';
 import {
@@ -10,39 +10,24 @@ import { AdTypes } from '../../src/lib/google/interfaces';
 import { IAuthDocument, AuthModel } from '../../src/models/auth';
 
 describe('TEST GOOGLE SERVICE API', () => {
-
-    let googleAPIService: GoogleAPIService;
-    googleAPIService = new GoogleAPIService();
-
     let googleService: GoogleService;
-    googleService = new GoogleService();
-
     let refreshToken: string;
     let accessToken: string;
     let loginCustomerId: string;
     let customerId: string;
     beforeAll(async () => {
         console.log('beforeAll');
-        try {
-            await mongoose.connect(MONGO_URI, {
-                useNewUrlParser: true,
-                useUnifiedTopology: true,
-              } as ConnectOptions)
-        } catch (err) {
-            console.log('CONNECT MongoDb failed by: ', err)
-        }
-
+        await connectDB();
+        googleService = new GoogleService(new GoogleAPIService());
         const auth = await AuthModel.findOne({ provider: PROVIDERS.GOOGLE }) as IAuthDocument;
         if (auth) {
             refreshToken = auth.refreshToken || '';
-        }
-        
-    }) 
+        } 
+    });
 
-    describe('Test construct of google service API', () => {
-        
+    describe('RUN TEST construct of google service API', () => {
         test('Class defined', () => {
-            expect(googleAPIService).not.toEqual(undefined);
+            expect(googleService).not.toEqual(undefined);
         })
 
         test('CLIENT ID, CLIENT SECRET is not empty', () => {
@@ -55,15 +40,15 @@ describe('TEST GOOGLE SERVICE API', () => {
         })
     })
 
-    describe('Test get access token of google service API', () => {
+    describe('RUN TEST get access token of google service API', () => {
         it('accessToken is not empty', async() => {
-            accessToken = await googleAPIService.getAccessToken(refreshToken);
+            accessToken = await googleService.apiService.getAccessToken(refreshToken);
             expect(accessToken).not.toEqual(undefined);
             expect(accessToken).not.toEqual(null);
         })
     })
 
-    describe('TEST GET USER INFO ', () => {
+    describe('RUN TEST GET USER INFO ', () => {
         let userProfile: any = null;
         beforeAll(async () => {
             userProfile = await googleService.getUserInfo(accessToken);
@@ -85,7 +70,7 @@ describe('TEST GOOGLE SERVICE API', () => {
         })
     });
 
-    describe('TEST GET LIST CUSTOMER MANAGER', () => {
+    describe('RUN TEST GET LIST CUSTOMER MANAGER', () => {
         let data: any = null;
         beforeAll(async () => {
             data = await googleService.getAllCustomerManagers(accessToken);
@@ -99,7 +84,7 @@ describe('TEST GOOGLE SERVICE API', () => {
         })
     });
 
-    describe('TEST GET ACCOUNTS', () => {
+    describe('RUN TEST GET ACCOUNTS', () => {
         let data: any = null;
         beforeAll(async () => {
             data = await googleService.getAllAccounts({ refreshToken, customerId: loginCustomerId });
@@ -123,7 +108,7 @@ describe('TEST GOOGLE SERVICE API', () => {
         })
     });
 
-    describe('TEST GET CAMPAIGNS', () => {
+    describe('RUN TEST GET CAMPAIGNS', () => {
         let data: any = null;
         beforeAll(async () => {
             data = await googleService.fetchingAdsData({ 

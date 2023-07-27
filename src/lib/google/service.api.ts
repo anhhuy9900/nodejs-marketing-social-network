@@ -13,11 +13,11 @@ import { QUERY_TABLES } from "./constants";
 import { CreateQueryOptionArgs, AdTypes, HttpHeaderOptions, CreateQuery } from "./interfaces";
 
 export class GoogleAPIService {
-  protected readonly axiosInstance: AxiosInstance;
+  public readonly axiosInstance: AxiosInstance;
   protected readonly GG_API_URL: string;
   protected readonly GG_API_VERSION: string;
   private readonly DEVELOPER_TOKEN: string;
-  protected readonly oauth2Client: Common.OAuth2Client;
+  public readonly oauth2Client: Common.OAuth2Client;
   protected queryString?: string;
 
   constructor() {

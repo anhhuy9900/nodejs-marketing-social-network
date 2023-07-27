@@ -1,9 +1,10 @@
 import express from 'express';
 import path from 'path';
 import { FacebookService } from '../lib/facebook';
+import { FacebookAPIService } from '../lib/facebook/service.api';
 
 const app = express.Router();
-const facebookService = new FacebookService();
+const facebookService = new FacebookService(new FacebookAPIService());
 
 app.get("/", async (req, res) => {
     try {
@@ -53,7 +54,7 @@ app.get("/profile", async (req, res) => {
 app.get("/permission", async (req, res) => {
     try {
         const { accessToken } = req.query as any;
-        const data = await facebookService.getUserPermission(accessToken);
+        const data = await facebookService.apiService.getUserPermission(accessToken);
 
         res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {
@@ -65,7 +66,7 @@ app.get("/permission", async (req, res) => {
 app.get("/adAccounts", async (req, res) => {
     try {
         const { accessToken, userId } = req.query as any;
-        const data = await facebookService.getAdAccounts(userId, accessToken);
+        const data = await facebookService.apiService.getAdAccounts(userId, accessToken);
 
         res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {
@@ -76,7 +77,7 @@ app.get("/adAccounts", async (req, res) => {
 app.get("/campaigns", async (req, res) => {
     try {
         const { accessToken, accountId } = req.query as any;
-        const data = await facebookService.getAdAccounts(accountId, accessToken);
+        const data = await facebookService.apiService.getAdAccounts(accountId, accessToken);
 
         res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {
@@ -87,7 +88,7 @@ app.get("/campaigns", async (req, res) => {
 app.get("/adsets", async (req, res) => {
     try {
         const { accessToken, accountId } = req.query as any;
-        const data = await facebookService.getAdsets(accountId, accessToken);
+        const data = await facebookService.apiService.getAdsets(accountId, accessToken);
 
         res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {
@@ -98,7 +99,7 @@ app.get("/adsets", async (req, res) => {
 app.get("/ads", async (req, res) => {
     try {
         const { accessToken, accountId } = req.query as any;
-        const data = await facebookService.getAds(accountId, accessToken);
+        const data = await facebookService.apiService.getAds(accountId, accessToken);
 
         res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {
@@ -109,7 +110,7 @@ app.get("/ads", async (req, res) => {
 app.get("/adImages", async (req, res) => {
     try {
         const { accessToken, accountId } = req.query as any;
-        const data = await facebookService.getAdImages(accountId, accessToken);
+        const data = await facebookService.apiService.getAdImages(accountId, accessToken);
 
         res.header("Content-Type",'application/json').status(200).send(data);	
     } catch(err: any) {

@@ -4,10 +4,12 @@ import { IUserDocument, UserModel } from '../../models/user';
 import { FacebookAPIService } from './service.api';
 import { FBAuthResponse } from './interfaces';
 
-export class FacebookService extends FacebookAPIService {
+export class FacebookService {
 
-    constructor() {
-        super();
+    public readonly apiService: FacebookAPIService;
+
+    constructor(apiService: FacebookAPIService) {
+        this.apiService = apiService;
     }
     
     getLoginUrl() {
@@ -41,7 +43,7 @@ export class FacebookService extends FacebookAPIService {
     }
 
     async createUserFromFbProfile(accessToken: string): Promise<IUserDocument> {
-        const { id, email, first_name, last_name } = await this.getProfile(accessToken);
+        const { id, email, first_name, last_name } = await this.apiService.getProfile(accessToken);
         return await new UserModel({
             networkId: id,
             email: email,

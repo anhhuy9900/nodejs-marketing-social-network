@@ -8,8 +8,7 @@ import { AdTypes } from '../lib/google/interfaces';
 
 const app = express.Router();
 
-const googleService = new GoogleService();
-const googleAPIService = new GoogleAPIService();
+const googleService = new GoogleService(new GoogleAPIService());
 
 app.get("/test", async (req, res) => {
     try {
@@ -58,7 +57,17 @@ app.get("/authenticate", async (req, res) => {
     }
 });
 
-app.get("/user-info", async (req, res) => {
+app.get("/get-user-info", async (req, res) => {
+    try {
+        const { accessToken } = req.query as any;
+        const user = await googleService.getUserInfo(accessToken);
+        res.header("Content-Type",'application/json').status(200).send({ user });	
+    } catch(err: any) {
+        res.status(500).send({message: err.message});
+    }
+});
+
+app.get("/create-user", async (req, res) => {
     try {
         const { accessToken } = req.query as any;
         const { id, email, name } = await googleService.getUserInfo(accessToken);
@@ -79,7 +88,7 @@ app.get("/user-info", async (req, res) => {
 app.get("/get-access-token", async (req, res) => {
     try {
         const { refreshToken } = req.query as any;
-        const accessToken = await googleService.getAccessToken(refreshToken);
+        const accessToken = await googleService.apiService.getAccessToken(refreshToken);
         
         res.header("Content-Type",'application/json').status(200).send({
             accessToken
